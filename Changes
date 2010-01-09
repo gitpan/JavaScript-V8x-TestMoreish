@@ -1,0 +1,5 @@
+TODO:
+	- Get line numbers working by tweaking JavaScript::V8 
+
+0.010 Friday January 08 16:52:43 PST 2010:
+    - Initial release
