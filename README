@@ -3,7 +3,7 @@ NAME
     using Test::More and v8
 
 VERSION
-    Version 0.010
+    Version 0.011
 
 SYNOPSIS
         use Test::More
@@ -18,6 +18,8 @@ SYNOPSIS
         diag( "Hello, World." );
         areEqual( 1, 1 );
         areEqual( 1, 2 );
+        like( "Hello, World.", /o, World/ )
+            like( "Hello, World.", /Alice/ )
         _END_
 
 DESCRIPTION
@@ -32,7 +34,14 @@ DESCRIPTION
 
 JavaScript USAGE
   diag( $message )
+        "Print" $message as L<Test::More> does with C<diag>
+
   areEqual( $got, $expected, $name )
+        $got == $expected
+
+  like( $got, $match, $name )
+        isValue( $got ) && isString( g$ot ) && $got.match( $match )
+
 USAGE
   test_js( $js )
     Evaluate $js in a Test::More-ish context (see JavaScript USAGE for

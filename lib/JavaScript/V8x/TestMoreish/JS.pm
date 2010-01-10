@@ -31,10 +31,31 @@ if (! _TestMoreish)
         return { name: name, error: error };
     };
 
-    _TestMoreish._areEqual = function( have, want, name ) {
-        if ( have != want )
-            return this._comparisonFailure( have, want, name, "Values should be equal." );
-        return { name: name };
+    _TestMoreish.test = {
+    
+        areEqual: function( got, expected ) { return got == expected; },
+        isString: function( got ) { return typeof got === 'string'; },
+        isValue: function( got ) { return this.isObject( got ) || this.isString( got ) || this.isNumber( got ) || this.isBoolean( got ); },
+        isObject: function( got ) { return (got && (typeof got === 'object' || this.isFunction( got ))) || false; },
+        isNumber: function( got ) { return typeof got === 'number' && isFinite( got ); },
+        isBoolean: function( got ) { return typeof got === 'boolean'; },
+        isFunction: function( got ) { return (typeof got === 'function') || Object.prototype.toString.apply( got ) === '[object Function]'; },
+        like: function( got, match ) {
+            if (this.isString( match )) match = new RegExp( match );
+            return this.isValue( got ) && this.isString( got ) && got.match( match );
+        }
+    };
+
+    _TestMoreish._areEqual = function( got, expected, name ) {
+        return this.test.areEqual( got, expected ) ?
+            { name: name } :
+            this._comparisonFailure( got, expected, name, "Value is not equal" );
+    };
+
+    _TestMoreish._like = function( got, match, name ) {
+        return this.test.like( got, match ) ?
+            { name: name } :
+            this._comparisonFailure( got, match, name, "Value does not match regular expression" );
     };
 	
 //    _formatMessage : function (customMessage /*:String*/, defaultMessage /*:String*/) /*:String*/ {
@@ -46,10 +67,6 @@ if (! _TestMoreish)
 //        }        
 //    },
 
-//    isString: function(o) {
-//        return typeof o === 'string';
-//    },
-//        
 //    getMessage : function () /*:String*/ {
 //        return this.message + "\nExpected: " + this.expected + " (" + (typeof this.expected) + ")"  +
 //            "\nActual:" + this.actual + " (" + (typeof this.actual) + ")";
@@ -73,31 +90,30 @@ if (! _TestMoreish)
 
     var _test = [
         'areEqual',
-/*
-        'areNotEqual',
-        'areSame',
-        'areNotSame',
-        'fail',
-        'isTypeOf',
-        'isArray',
-        'isBoolean',
-        'isFunction',
-        'isNumber',
-        'isObject',
-        'isString',
-        'isInstanceOf',
-        'isTrue',
-        'isFalse',
-        'isNaN',
-        'isNotNaN',
-        'isNull',
-        'isNotNull',
-        'isUndefined',
-        'isNotUndefined'
-*/
+        'like',
+//        'areNotEqual',
+//        'areSame',
+//        'areNotSame',
+//        'fail',
+//        'isTypeOf',
+//        'isArray',
+//        'isBoolean',
+//        'isFunction',
+//        'isNumber',
+//        'isObject',
+//        'isString',
+//        'isInstanceOf',
+//        'isTrue',
+//        'isFalse',
+//        'isNaN',
+//        'isNotNaN',
+//        'isNull',
+//        'isNotNull',
+//        'isUndefined',
+//        'isNotUndefined'
     ];
 
-    for (ii = 0; ii < _test.length; ii++) {
+    for (var ii = 0; ii < _test.length; ii++) {
         var name = _test[ii];
         _TestMoreish[name] = _installTest( name );
     }

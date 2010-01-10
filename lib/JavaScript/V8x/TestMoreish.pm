@@ -9,11 +9,11 @@ JavaScript::V8x::TestMoreish - Run and test JavaScript code in Perl using Test::
 
 =head1 VERSION
 
-Version 0.010
+Version 0.011
 
 =cut
 
-our $VERSION = '0.010';
+our $VERSION = '0.011';
 
 =head1 SYNOPSIS
 
@@ -29,6 +29,8 @@ our $VERSION = '0.010';
     diag( "Hello, World." );
     areEqual( 1, 1 );
     areEqual( 1, 2 );
+    like( "Hello, World.", /o, World/ )
+	like( "Hello, World.", /Alice/ )
     _END_
 
 =head1 DESCRIPTION
@@ -41,7 +43,15 @@ Except for requiring a C<libv8> installation, this package provides seamless fun
 
 =head2 diag( $message )
 
+    "Print" $message as L<Test::More> does with C<diag>
+
 =head2 areEqual( $got, $expected, $name )
+
+    $got == $expected
+
+=head2 like( $got, $match, $name )
+
+    isValue( $got ) && isString( g$ot ) && $got.match( $match )
 
 =head1 USAGE
 
@@ -104,6 +114,7 @@ _END_
     $self->eval( join "\n", map { "function $_() { TestMoreish.$_.apply( TestMoreish, arguments ) }" } split m/\n+/, <<_END_ );
 diag
 areEqual
+like
 _END_
 }
 
