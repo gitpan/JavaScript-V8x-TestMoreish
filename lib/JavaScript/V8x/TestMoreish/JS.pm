@@ -10,34 +10,42 @@ if (! _TestMoreish)
 
 (function(){ 
 
-	_TestMoreish._ok = function( ok, name ) {
+    var _TM = _TestMoreish;
+
+	_TM._ok = function( ok, name ) {
         _TestMoreish_ok( ok, name );
     }
 
-	_TestMoreish._diag = function( diag ) {
+	_TM._diag = function( diag ) {
         _TestMoreish_diag( diag );
     }
 
-    function getErrorObject(){
-      try { throw Error('') } catch(err) { return err; }
-    }
-
-    _TestMoreish._comparisonFailure = function( have, want, name, _error ) {
+    _TM._gotExpectedFailure = function( got, expected, name, _error ) {
         
         var error = _error + 
-            "\nGot: " + have + " (" + (typeof have) + ")"  +
-            "\nExpected: " + want + " (" + (typeof want) + ")";
+            "\nGot: " + got + " (" + (typeof got) + ")"  +
+            "\nExpected: " + expected + " (" + (typeof expected) + ")";
 
         return { name: name, error: error };
     };
 
-    _TestMoreish.test = {
+    _TM._gotFailure = function( got, _error ) {
+
+        var error = _error + 
+            "\nGot: " + got + " (" + (typeof got) + ")";
+
+        return { name: name, error: error };
+    }
+
+
+    _TM.test = {
     
         areEqual: function( got, expected ) { return got == expected; },
         areNotEqual: function( got, expected ) { return got != expected; },
         areSame: function( got, expected ) { return got === expected; },
         areNotSame: function( got, expected ) { return got !== expected; },
         
+        isTrue: function( got ) { return got === true; },
         isFalse: function( got ) { return got === false; },
 
         isString: function( got ) { return typeof got === 'string'; },
@@ -53,32 +61,72 @@ if (! _TestMoreish)
         }
     };
 
-    _TestMoreish._areEqual = function( got, expected, name ) {
+    _TM._areEqual = function( got, expected, name ) {
         return this.test.areEqual( got, expected ) ?  { name: name } :
-            this._comparisonFailure( got, expected, name, "Value is not equal" );
+            this._gotExpectedFailure( got, expected, name, "Value is not equal" );
     };
 
-    _TestMoreish._areNotEqual = function( got, expected, name ) {
+    _TM._areNotEqual = function( got, expected, name ) {
         return this.test.areNotEqual( got, expected ) ?  { name: name } :
-            this._comparisonFailure( got, expected, name, "Value is equal" );
+            this._gotExpectedFailure( got, expected, name, "Value is equal" );
     };
 
-    _TestMoreish._areSame = function( got, expected, name ) {
+    _TM._areSame = function( got, expected, name ) {
         return this.test.areSame( got, expected ) ?  { name: name } :
-            this._comparisonFailure( got, expected, name, "Value is not same" );
+            this._gotExpectedFailure( got, expected, name, "Value is not same" );
     };
 
-    _TestMoreish._areNotSame = function( got, expected, name ) {
+    _TM._areNotSame = function( got, expected, name ) {
         return this.test.areNotSame( got, expected ) ?  { name: name } :
-            this._comparisonFailure( got, expected, name, "Value is same" );
+            this._gotExpectedFailure( got, expected, name, "Value is same" );
     };
 
-    _TestMoreish._like = function( got, match, name ) {
+    _TM._isTrue = function( got, name ) {
+        return this.test.isTrue( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not true" );
+    };
+
+    _TM._isFalse = function( got, name ) {
+        return this.test.isFalse( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not false" );
+    };
+
+    _TM._isString = function( got, name ) {
+        return this.test.isString( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not a string" );
+    };
+
+    _TM._isValue = function( got, name ) {
+        return this.test.isValue( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not a value" );
+    };
+    
+    _TM._isObject = function( got, name ) {
+        return this.test.isNumber( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not an object" );
+    };
+
+    _TM._isNumber = function( got, name ) {
+        return this.test.isNumber( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not a number" );
+    };
+    
+    _TM._isBoolean = function( got, name ) {
+        return this.test.isBoolean( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not a boolean" );
+    };
+    
+    _TM._isFunction = function( got, name ) {
+        return this.test.isFunction( got ) ?  { name: name } :
+            this._gotFailure( got, name, "Value was not a function" );
+    };
+    
+    _TM._like = function( got, match, name ) {
         return this.test.like( got, match ) ?  { name: name } :
-            this._comparisonFailure( got, match, name, "Value does not match regular expression" );
+            this._gotExpectedFailure( got, match, name, "Value does not match regular expression" );
     };
 	
-    _TestMoreish._fail = function( name ) {
+    _TM._fail = function( name ) {
         return { name: name, error: "Failure" };
     };
 
@@ -111,25 +159,29 @@ if (! _TestMoreish)
 
     // Public API
 
-    _TestMoreish.diag = function() { this._diag.apply( this, arguments ) };
+    _TM.diag = function() { this._diag.apply( this, arguments ) };
 
     var _test = [
         'areEqual',
         'areNotEqual',
         'areSame',
         'areNotSame',
-        'fail',
+
+        'isTrue',
+        'isFalse',
+
+        'isBoolean',
+        'isFunction',
+        'isNumber',
+        'isObject',
+        'isString',
+
         'like',
+
+        'fail',
 //        'isTypeOf',
 //        'isArray',
-//        'isBoolean',
-//        'isFunction',
-//        'isNumber',
-//        'isObject',
-//        'isString',
 //        'isInstanceOf',
-//        'isTrue',
-//        'isFalse',
 //        'isNaN',
 //        'isNotNaN',
 //        'isNull',
@@ -140,7 +192,7 @@ if (! _TestMoreish)
 
     for (var ii = 0; ii < _test.length; ii++) {
         var name = _test[ii];
-        _TestMoreish[name] = _installTest( name );
+        _TM[name] = _installTest( name );
     }
 
 })();

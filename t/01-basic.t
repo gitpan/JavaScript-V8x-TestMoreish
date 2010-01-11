@@ -20,14 +20,9 @@ areEqual( 1, 2 );
 like( "Hello, World.", /o, World/ )
 like( "Hello, World.", /Alice/ )
 fail();
-areNotEqual( 1, 2 );
-areSame( 1, 1 );
-areNotSame( 1, 2 );
 _END_
 
-my $tests = 4;
-
-is( scalar @results, 4 + $tests );
+is( scalar @results, 5 );
 
 ok( $results[0]->{ok} );
 
@@ -40,8 +35,23 @@ ok( ! $results[3]->{ok} );
 
 ok( ! $results[4]->{ok} );
 
-for ( 1 .. 3 ) {
-    ok( $results[$tests + $_ ]->{ok} );
+($premature, @results) = run_tests sub { test_js( <<'_END_' ) };
+areEqual( 1, 1 );
+areNotEqual( 1, 2 );
+areSame( 1, 1 );
+areNotSame( 1, 2 );
+
+isTrue( true );
+isFalse( false );
+
+_END_
+
+my $tests = 6;
+
+is( scalar @results, $tests );
+
+for ( 0 .. $tests - 1 ) {
+    ok( $results[$_ ]->{ok} );
 }
 
 #warn Dumper \@results;

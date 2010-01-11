@@ -3,7 +3,7 @@ NAME
     using Test::More and v8
 
 VERSION
-    Version 0.012
+    Version 0.013
 
 SYNOPSIS
         use Test::More

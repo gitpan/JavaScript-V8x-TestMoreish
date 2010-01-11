@@ -9,11 +9,11 @@ JavaScript::V8x::TestMoreish - Run and test JavaScript code in Perl using Test::
 
 =head1 VERSION
 
-Version 0.012
+Version 0.013
 
 =cut
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 =head1 SYNOPSIS
 
@@ -119,8 +119,20 @@ areEqual
 areNotEqual
 areSame
 areNotSame
-fail
+
+isTrue
+isFalse
+
+isString
+isValue
+isObject
+isNumber
+isBoolean
+isFunction
+
 like
+
+fail
 _END_
 }
 
