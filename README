@@ -3,7 +3,7 @@ NAME
     using Test::More and v8
 
 VERSION
-    Version 0.011
+    Version 0.012
 
 SYNOPSIS
         use Test::More
@@ -28,19 +28,20 @@ DESCRIPTION
     addition, the customized context binds some functions that expose parts
     of Test::More to facillate testing.
 
-    Except for requiring a "libv8" installation, this package provides
-    seamless functionality. You can interleave regular Test::More tests and
-    JavaScript tests as usual.
+    An installation of "libv8" (for JavaScript::V8) is required.
+
+    You can interleave regular Test::More tests and JavaScript tests as
+    usual.
 
 JavaScript USAGE
   diag( $message )
-        "Print" $message as L<Test::More> does with C<diag>
+        "Print" $message as Test::More does with diag
 
   areEqual( $got, $expected, $name )
         $got == $expected
 
   like( $got, $match, $name )
-        isValue( $got ) && isString( g$ot ) && $got.match( $match )
+        isValue( $got ) && isString( $got ) && $got.match( $match )
 
 USAGE
   test_js( $js )

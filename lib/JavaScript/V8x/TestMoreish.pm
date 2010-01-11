@@ -9,11 +9,11 @@ JavaScript::V8x::TestMoreish - Run and test JavaScript code in Perl using Test::
 
 =head1 VERSION
 
-Version 0.011
+Version 0.012
 
 =cut
 
-our $VERSION = '0.011';
+our $VERSION = '0.012';
 
 =head1 SYNOPSIS
 
@@ -37,13 +37,15 @@ our $VERSION = '0.011';
 
 JavaScript::V8x::TestMoreish uses the Google V8 JavaScript engine (via L<JavaScript::V8>) to execute JavaScript code on demand in Perl. In addition, the customized context binds some functions that expose parts of Test::More to facillate testing.
 
-Except for requiring a C<libv8> installation, this package provides seamless functionality. You can interleave regular Test::More tests and JavaScript tests as usual.
+An installation of C<libv8> (for L<JavaScript::V8>) is required.
+
+You can interleave regular Test::More tests and JavaScript tests as usual.
 
 =head1 JavaScript USAGE
 
 =head2 diag( $message )
 
-    "Print" $message as L<Test::More> does with C<diag>
+    "Print" $message as Test::More does with diag
 
 =head2 areEqual( $got, $expected, $name )
 
@@ -51,7 +53,7 @@ Except for requiring a C<libv8> installation, this package provides seamless fun
 
 =head2 like( $got, $match, $name )
 
-    isValue( $got ) && isString( g$ot ) && $got.match( $match )
+    isValue( $got ) && isString( $got ) && $got.match( $match )
 
 =head1 USAGE
 
@@ -114,6 +116,10 @@ _END_
     $self->eval( join "\n", map { "function $_() { TestMoreish.$_.apply( TestMoreish, arguments ) }" } split m/\n+/, <<_END_ );
 diag
 areEqual
+areNotEqual
+areSame
+areNotSame
+fail
 like
 _END_
 }
